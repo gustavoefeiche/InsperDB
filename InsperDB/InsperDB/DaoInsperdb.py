@@ -8,13 +8,13 @@ class DaoInsperdb:
         self.db.execute('''INSERT INTO person (Person_id, Person_name) VALUES ('{} {}')'''.format(person_id, person_name))
         rv = db.fetchall()
         return str(rv)
-'''  
+  
     #select all user from 'tb_user' table...    
     def select(self, table):
-        select_tb_user = self.db.prepare("select * from '{}'".format(table))
+        select_tb_user = self.db.execute("select * from '{}'".format(table))
             
         for row in select_tb_user():
             print(row)
 
-'''
+
       
