@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'mariopalestra1'
+app.config['MYSQL_PASSWORD'] = 'root'
 app.config['MYSQL_DB'] = 'Insperdb'
 
 mysql = MySQL(app)
@@ -22,9 +22,9 @@ def imprimi():
 
 	db = mysql.connection.cursor()
 	obj = DaoInsperdb(db)
-	obj.insertValuesPerson(str(email), str(nome))
+	obj.insertValuesPerson(email, nome)
 
-	return nome
+	
 
 if __name__ == '__main__':
     app.run(debug=True)
