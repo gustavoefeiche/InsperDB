@@ -4,3 +4,4 @@ CREATE TABLE Person (
   Person_email VARCHAR(100) NOT NULL,
   Person_name VARCHAR(100) NOT NULL
 );
+

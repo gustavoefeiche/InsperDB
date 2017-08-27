@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
 from flask_mysqldb import MySQL
 from DaoInsperdb import DaoInsperdb
 import json
@@ -7,24 +7,22 @@ app = Flask(__name__)
 
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'root'
-app.config['MYSQL_DB'] = 'Insperdb'
+app.config['MYSQL_PASSWORD'] = ''
+app.config['MYSQL_DB'] = 'insperdb'
 
 mysql = MySQL(app)
 
-@app.route('/', methods = ['GET', 'POST'])
-def imprimi():
+@app.route('/add', methods = ['GET', 'POST'])
+def add():
 
 	js = request.get_json(force = True)
 
 	email = js['email']
-	nome = js['nome']
-
+	nome =  js['nome']
+	
 	db = mysql.connection.cursor()
 	obj = DaoInsperdb(db)
-	obj.insertValuesPerson(email, nome)
-
-	
+	return obj.insertValuesPerson(email, nome)
 
 if __name__ == '__main__':
     app.run(debug=True)
