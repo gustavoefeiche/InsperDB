@@ -3,9 +3,10 @@ class DaoInsperdb:
        
     def __init__(self, db):
         self.db = db
+
                    
-    def insertValuesPerson(self, person_id, person_name):
-        self.db.execute('''INSERT INTO person (Person_id, Person_name) VALUES ('{} {}')'''.format(person_id, person_name))
+    def insertValuesPerson(self, person_email, person_name):
+        self.db.execute("INSERT INTO person (Person_email, Person_name) VALUES (%s %s)",(person_email, person_name))
         rv = db.fetchall()
         return str(rv)
   

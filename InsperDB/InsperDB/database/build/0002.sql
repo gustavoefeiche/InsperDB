@@ -1,6 +1,6 @@
 DROP TABLE IF EXISTS Person;
 
 CREATE TABLE Person (
-  Person_id INT NOT NULL,
+  Person_email VARCHAR(100) NOT NULL,
   Person_name VARCHAR(100) NOT NULL
 );
