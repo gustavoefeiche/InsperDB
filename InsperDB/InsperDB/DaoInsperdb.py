@@ -5,7 +5,8 @@ class DaoInsperdb:
         self.db = db
 
     def insertValuesPerson(self, person_email, person_name):
-        self.db.execute('''INSERT INTO Person (Person_email, Person_name) VALUES ('{}', '{}')'''.format(person_email, person_name))
+   
+        self.db.execute('''INSERT INTO Person (Person_email, Person_name) VALUES (%s, %s)''', (person_email, person_name))
         rv = self.db.fetchall()
-        return 'ok'
+        return str(rv)
       

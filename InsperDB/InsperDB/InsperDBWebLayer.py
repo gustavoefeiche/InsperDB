@@ -46,7 +46,7 @@ def add_user():
         )
 
         data = json.dumps(user.get_all_props())
-        r = requests.post('127.0.0.1:5000/add', json = data)
+        r = requests.post('http://127.0.0.1:5000/add', json = data)
 
     return redirect('/')
 # --------------------------------------------------- #
