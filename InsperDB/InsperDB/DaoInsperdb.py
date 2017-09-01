@@ -9,7 +9,7 @@ class DaoInsperdb:
 
         self.app.config['MYSQL_HOST'] = 'localhost'
         self.app.config['MYSQL_USER'] = 'root'
-        self.app.config['MYSQL_PASSWORD'] = 'mariopalestra1'
+        self.app.config['MYSQL_PASSWORD'] = 'senha'
         self.app.config['MYSQL_DB'] = 'insperdb'
 
         return "Done"
