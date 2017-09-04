@@ -1,0 +1,4 @@
+localhost
+root
+mariopalestra1
+insperdb

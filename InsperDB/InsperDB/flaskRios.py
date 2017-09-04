@@ -6,10 +6,10 @@ import json
 app = Flask(__name__)
 
 obj = DaoInsperdb(app)
-obj.configApp()
+obj.connect()
 obj.initializeSQL(MySQL)
 
-@app.route('/add', methods = ['GET', 'POST'])
+@app.route('/login', methods = ['POST'])
 def add():
 
 	if request.method == 'POST':
@@ -21,6 +21,27 @@ def add():
 		pw =  js['password']
 		obj.insertValuesPerson(email, pw)
 		return "Done"
+
+@app.route('/registerorganization', methods = ['GET', 'POST'])
+def add():
+
+	if request.method == 'POST':
+
+		obj.initializeCursor()
+
+		js = json.loads(request.get_json(force = True))
+		name = js['email']
+		organization =  js['password']
+		obj.insertValuesPerson(email, pw)
+		return "Done"
+
+@app.route('/studentorganization', methods = ['GET'])
+def readInfo:
+
+	a = obj.readStudentOrgInfo()
+
+	data = json.dumps(a)
+	r = requests.post('http://127.0.0.1:8080/add', json = data)
 
 if __name__ == '__main__':
     app.run(debug=True)
