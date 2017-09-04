@@ -5,15 +5,13 @@ class DaoInsperdb:
         self.app = app
 
     def connect(self):
-        text_file = open("input.txt", "r")
-        lines = text_file.readlines()
         
         self.app.config['MYSQL_HOST'] = 'localhost'
         self.app.config['MYSQL_USER'] = 'root'
         self.app.config['MYSQL_PASSWORD'] = 'password'
         self.app.config['MYSQL_DB'] = 'insperdb'
 
-        return "Done"
+        return "done"
 
     def disconnect(self):
         self.mysql.connection.close()
@@ -35,15 +33,14 @@ class DaoInsperdb:
         self.mysql.connection.commit()
         return str(rv)
 
-    def insertValuesOrganization(self, Oname, Pname):
-
-        self.db.execute('''INSERT INTO student_has_organization (ID_student, ID_organization) 
-        VALUES (SELECT o.ID, p.ID FROM student_organization o, person p WHERE o.name = '%s' AND p.Person_name = '%s') ''', (Oname, Pname))
+    def insertValuesStudent_Organization(self, Oname, Pname):
+        print(Oname)
+        self.db.execute('''INSERT INTO student_has_organization (ID_student, ID_organization) VALUES ((SELECT ID FROM person WHERE Person_name = %s),(SELECT ID FROM student_organization WHERE nome = %s)) ''', (Pname, Oname))
         rv = self.db.fetchall()
         self.mysql.connection.commit()
         return str(rv)
-
+"""
     def ReturnOrganization_PersonInfo(self, Pname):
 
         return
-      
+"""   
