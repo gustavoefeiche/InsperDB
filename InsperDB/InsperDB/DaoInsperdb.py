@@ -5,11 +5,19 @@ class DaoInsperdb:
         self.app = app
 
     def connect(self):
-        
-        self.app.config['MYSQL_HOST'] = 'localhost'
-        self.app.config['MYSQL_USER'] = 'root'
-        self.app.config['MYSQL_PASSWORD'] = 'password'
-        self.app.config['MYSQL_DB'] = 'insperdb'
+
+        file = open("file.txt","r")
+        lines = []
+
+        for i in file:
+
+            lines.append(i)
+        print(lines)
+            
+        self.app.config['MYSQL_HOST'] = '%s',((lines[0])[:-1])
+        self.app.config['MYSQL_USER'] = '%s',((lines[1])[:-1])
+        self.app.config['MYSQL_PASSWORD'] = '%s',((lines[2])[:-1])
+        self.app.config['MYSQL_DB'] = '%s',(lines[0])
 
         return "done"
 
