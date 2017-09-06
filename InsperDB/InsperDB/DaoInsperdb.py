@@ -34,21 +34,37 @@ class DaoInsperdb:
 
         return "done"
 
-    def insertValuesPerson(self, person_email, person_name):
+    def insertValuesPerson(self, person_email, person_password):
    
-        self.db.execute('''INSERT INTO Person (Person_email, Person_name) VALUES (%s, %s)''', (person_email, person_name))
+        self.db.execute('''INSERT INTO Person (Person_email, Person_Password, Valid) VALUES (%s, %s, 'T')''', (person_email, person_password))
         rv = self.db.fetchall()
         self.mysql.connection.commit()
-        return str(rv)
+        return 'done'
 
     def insertValuesStudent_Organization(self, Oname, Pname):
-        print(Oname)
+
         self.db.execute('''INSERT INTO student_has_organization (ID_student, ID_organization) VALUES ((SELECT ID FROM person WHERE Person_name = %s),(SELECT ID FROM student_organization WHERE nome = %s)) ''', (Pname, Oname))
         rv = self.db.fetchall()
         self.mysql.connection.commit()
-        return str(rv)
-"""
-    def ReturnOrganization_PersonInfo(self, Pname):
+        return "done"
 
-        return
-"""   
+    def changePersonEmail(self, NewEmail, Password):
+
+        self.db.execute('''UPDATE person SET Person_email = %s WHERE Person_password = %s ''',(NewEmail, Password))
+        rv = self.db.fetchall()
+        self.mysql.connection.commit()
+        return 'done'
+
+    def showUserInfo(self, email):
+
+        self.db.execute('''SELECT * FROM  person WHERE Person_email = %s ''', [email])
+        rv = self.db.fetchall()
+        self.mysql.connection.commit()
+        return str(rv)
+
+    def logicDelete(self, email):
+        print(email)
+        self.db.execute('''UPDATE person SET Valid = 'F' WHERE Person_email = %s ''', [email])
+        self.mysql.connection.commit()
+        return 'done'
+  
