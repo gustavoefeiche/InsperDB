@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, Response
+from flask import Flask, request, jsonify, Response, url_for
 from flask_mysqldb import MySQL
 from DaoInsperdb import DaoInsperdb
 import json
@@ -23,7 +23,7 @@ def add():
 		obj.insertValuesPerson(email, pw)
 		return "Done"
 
-@app.route('/registerorganization', methods = ['GET', 'POST'])
+@app.route('/registerorganization', methods = ['POST'])
 
 def addorganization():
 
@@ -51,16 +51,19 @@ def changeEmail():
 		NewEmail=  js['email']
 		pw = js['password']
 		obj.changePersonEmail(NewEmail, pw)
+		
 		return "Done"
 
-@app.route('/user/<email>', methods = ['POST'])
+@app.route('/user/<email>', methods = ['GET'])
 
 def readUser(email):
 
-	if request.method == 'POST':
+	if request.method == 'GET':
 
 		obj.initializeCursor()
-		return(obj.showUserInfo(email))
+		r = obj.showUserInfo(email)
+		
+		return r
 
 @app.route('/delete', methods = ['POST'])
 def deleteUser():
@@ -73,6 +76,7 @@ def deleteUser():
 		js = request.get_json(force = True)
 		email =  js['email']
 		obj.logicDelete(email)
+		
 		return "Done"	
 
 
