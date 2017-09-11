@@ -33,9 +33,9 @@ def addorganization():
 
 		#js = json.loads(request.get_json(force = True))
 		js = request.get_json(force = True)
-		name = js['name']
+		email = js['email']
 		organization =  js['organization']
-		obj.insertValuesStudent_Organization(organization, name)
+		obj.insertValuesStudent_Organization(organization, email)
 		return "Done"
 
 @app.route('/email', methods = ['POST'])
@@ -62,7 +62,7 @@ def readUser(email):
 
 		obj.initializeCursor()
 		r = obj.showUserInfo(email)
-		
+
 		return r
 
 @app.route('/delete', methods = ['POST'])
@@ -77,8 +77,21 @@ def deleteUser():
 		email =  js['email']
 		obj.logicDelete(email)
 		
-		return "Done"	
+		return "Done"
+
+
+@app.route('/studentOrganization/<email>', methods = ['GET'])
+def showUserOrganizations(email):
+
+	if request.method == 'GET':
+
+		obj.initializeCursor()
+
+		r = obj.showStudentOrgnizations(email)
+		
+		return r	
+
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host = '0.0.0.0')

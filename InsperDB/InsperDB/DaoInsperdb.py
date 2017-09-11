@@ -19,10 +19,12 @@ class DaoInsperdb:
         self.app.config['MYSQL_PASSWORD'] = lines[2][:-1]
         self.app.config['MYSQL_DB'] = lines[3]
 
+
         return "done"
 
     def disconnect(self):
         self.mysql.connection.close()
+        return "done"
 
     def initializeCursor(self):
         self.db = self.mysql.connection.cursor()
@@ -41,9 +43,9 @@ class DaoInsperdb:
         self.mysql.connection.commit()
         return 'done'
 
-    def insertValuesStudent_Organization(self, Oname, Pname):
+    def insertValuesStudent_Organization(self, Oname, Pemail):
 
-        self.db.execute('''INSERT INTO student_has_organization (ID_student, ID_organization) VALUES ((SELECT ID FROM person WHERE Person_name = %s),(SELECT ID FROM student_organization WHERE nome = %s)) ''', (Pname, Oname))
+        self.db.execute('''INSERT INTO student_has_organization (ID_student, ID_organization) VALUES ((SELECT ID FROM person WHERE Person_email = %s),(SELECT ID FROM student_organization WHERE nome = %s)) ''', (Pemail, Oname))
         rv = self.db.fetchall()
         self.mysql.connection.commit()
         return "done"
@@ -60,11 +62,19 @@ class DaoInsperdb:
         self.db.execute('''SELECT * FROM  person WHERE Person_email = %s ''', [email])
         rv = self.db.fetchall()
         self.mysql.connection.commit()
+        
         return str(rv)
 
     def logicDelete(self, email):
-        print(email)
+        
         self.db.execute('''UPDATE person SET Valid = 'F' WHERE Person_email = %s ''', [email])
         self.mysql.connection.commit()
         return 'done'
-  
+
+    def showStudentOrgnizations(self, email):
+
+        self.db.execute('''SELECT DISTINCT(so.nome) FROM person p, student_organization so, student_has_organization sho WHERE p.ID = sho.ID_student AND so.ID = so.ID AND p.ID = (SELECT ID FROM person WHERE Person_email = %s) ''', [email])
+        rv = self.db.fetchall()
+        self.mysql.connection.commit()
+        
+        return str(rv)
