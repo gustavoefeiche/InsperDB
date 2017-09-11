@@ -1,3 +1,4 @@
+USE InsperDB;
 DROP TABLE IF EXISTS student_has_organization;
 
 CREATE TABLE student_has_organization (
