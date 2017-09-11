@@ -37,11 +37,21 @@ class DaoInsperdb:
         return "done"
 
     def insertValuesPerson(self, person_email, person_password):
-   
+        
+        exists_flag = {}
+        exists = self.db.execute('''SELECT * FROM person WHERE Person_email = %s''', [person_email])
+
+        if exists:
+            # 1 se ja existe na bae de dados
+            exists_flag['flag'] = '1'
+            return exists_flag
+
         self.db.execute('''INSERT INTO Person (Person_email, Person_Password, Valid) VALUES (%s, %s, 'T')''', (person_email, person_password))
         rv = self.db.fetchall()
         self.mysql.connection.commit()
-        return 'done'
+        #0 se não existe na base de dados
+        exists_flag['flag'] = '0'
+        return exists_flag
 
     def insertValuesStudent_Organization(self, Oname, Pemail):
 
@@ -59,11 +69,15 @@ class DaoInsperdb:
 
     def showUserInfo(self, email):
 
+        userInfo = {}
+
         self.db.execute('''SELECT * FROM  person WHERE Person_email = %s ''', [email])
         rv = self.db.fetchall()
         self.mysql.connection.commit()
         
-        return str(rv)
+        userInfo['info'] = str(rv)
+
+        return userInfo
 
     def logicDelete(self, email):
         
@@ -73,20 +87,27 @@ class DaoInsperdb:
 
     def showStudentOrgnizations(self, email):
 
-        self.db.execute('''SELECT DISTINCT(so.nome) FROM person p, student_organization so, student_has_organization sho WHERE p.ID = sho.ID_student AND so.ID = so.ID AND p.ID = (SELECT ID FROM person WHERE Person_email = %s) ''', [email])
+        s_organization = {}
+
+        self.db.execute('''SELECT DISTINCT(so.nome) FROM person p, student_organization so, student_has_organization sho WHERE p.ID = p.ID AND so.ID = so.ID AND p.ID = (SELECT ID FROM person WHERE Person_email = %s) ''', [email])
         rv = self.db.fetchall()
         self.mysql.connection.commit()
         
-        return str(rv)
+        s_organization['organization'] = str(rv)
 
-    def checkLogin(self, email, pw):
+        return s_organization
+
+    def checkLogin(self, email):
         
-        self.db.execute('''SELECT * FROM  person WHERE Person_email = %s AND Person_password = %s AND Valid = 'T' ''', (email, pw))
+        login_exists = {}
+        self.db.execute('''SELECT * FROM  person WHERE Person_email = %s AND Valid = 'T' ''', [email])
     
         rv = self.db.fetchall()
         
         if not rv:
-            return "Não Existe"
+            login_exists['login_exists'] = '0'
+            return login_exists
         
-        return "Existe"
+        login_exists['login_exists'] = '1'
+        return login_exists
         
