@@ -89,6 +89,22 @@ def showUserOrganizations(email):
 
 		r = obj.showStudentOrgnizations(email)
 		
+		return r
+
+@app.route('/login', methods = ['POST'])
+def login():
+
+	if request.method == 'POST':
+
+		obj.initializeCursor()
+
+		#js = json.loads(request.get_json(force = True))
+		js = request.get_json(force = True)
+		email=  js['email']
+		pw = js['password']
+
+		r = obj.checkLogin(email, pw)
+		
 		return r	
 
 

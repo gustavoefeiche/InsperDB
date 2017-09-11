@@ -78,3 +78,15 @@ class DaoInsperdb:
         self.mysql.connection.commit()
         
         return str(rv)
+
+    def checkLogin(self, email, pw):
+        
+        self.db.execute('''SELECT * FROM  person WHERE Person_email = %s AND Person_password = %s AND Valid = 'T' ''', (email, pw))
+    
+        rv = self.db.fetchall()
+        
+        if not rv:
+            return "Não Existe"
+        
+        return "Existe"
+        
