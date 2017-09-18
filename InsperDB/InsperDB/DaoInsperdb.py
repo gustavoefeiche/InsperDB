@@ -38,20 +38,15 @@ class DaoInsperdb:
 
     def insertValuesPerson(self, person_email, person_password):
         
-        exists_flag = {}
         exists = self.db.execute('''SELECT * FROM person WHERE Person_email = %s''', [person_email])
 
         if exists:
-            # 1 se ja existe na bae de dados
-            exists_flag['flag'] = '1'
-            return exists_flag
+            return '1'
 
         self.db.execute('''INSERT INTO Person (Person_email, Person_Password, Valid) VALUES (%s, %s, 'T')''', (person_email, person_password))
         rv = self.db.fetchall()
         self.mysql.connection.commit()
-        #0 se não existe na base de dados
-        exists_flag['flag'] = '0'
-        return exists_flag
+        return '0'
 
     def insertValuesStudent_Organization(self, Oname, Pemail):
 
@@ -69,15 +64,12 @@ class DaoInsperdb:
 
     def showUserInfo(self, email):
 
-        userInfo = {}
-
+    
         self.db.execute('''SELECT * FROM  person WHERE Person_email = %s ''', [email])
         rv = self.db.fetchall()
         self.mysql.connection.commit()
         
-        userInfo['info'] = str(rv)
-
-        return userInfo
+        return str(rv)
 
     def logicDelete(self, email):
         
@@ -87,27 +79,20 @@ class DaoInsperdb:
 
     def showStudentOrgnizations(self, email):
 
-        s_organization = {}
-
-        self.db.execute('''SELECT DISTINCT(so.nome) FROM person p, student_organization so, student_has_organization sho WHERE p.ID = p.ID AND so.ID = so.ID AND p.ID = (SELECT ID FROM person WHERE Person_email = %s) ''', [email])
+        self.db.execute('''SELECT DISTINCT(so.nome) FROM person p, student_organization so, student_has_organization sho WHERE p.ID = sho.ID_student AND so.ID = sho.ID_organization AND p.ID = (SELECT ID FROM person WHERE Person_email = %s) ''', [email])
         rv = self.db.fetchall()
         self.mysql.connection.commit()
         
-        s_organization['organization'] = str(rv)
-
-        return s_organization
+        return str(rv)
 
     def checkLogin(self, email):
         
-        login_exists = {}
         self.db.execute('''SELECT * FROM  person WHERE Person_email = %s AND Valid = 'T' ''', [email])
     
         rv = self.db.fetchall()
         
         if not rv:
-            login_exists['login_exists'] = '0'
-            return login_exists
+            return '0'
         
-        login_exists['login_exists'] = '1'
-        return login_exists
+        return '1'
         

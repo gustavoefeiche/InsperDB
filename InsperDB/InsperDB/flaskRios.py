@@ -17,11 +17,23 @@ def add():
 
 		obj.initializeCursor()
 
-		js = json.loads(request.get_json(force = True))
+		#js = json.loads(request.get_json(force = True))
+		js = request.get_json(force = True)
 		email = js['email']
 		pw =  js['password']
 		r = obj.insertValuesPerson(email, pw)
-		return jsonify(r)
+
+		exists_flag = {}
+
+		if r == '1':
+			#1 se ja existe na base de dados
+			exists_flag['flag'] = '1'
+			return jsonify(exists_flag)
+
+
+		#0 se não existe na base de dados
+		exists_flag['flag'] = '0'
+		return jsonify(exists_flag)
 
 @app.route('/registerorganization', methods = ['POST'])
 
@@ -63,7 +75,11 @@ def readUser(email):
 		obj.initializeCursor()
 		r = obj.showUserInfo(email)
 
-		return jsonify(r)
+		userInfo = {}
+
+		userInfo['info'] = r 
+
+		return jsonify(userInfo)
 
 @app.route('/delete', methods = ['POST'])
 def deleteUser():
@@ -89,7 +105,11 @@ def showUserOrganizations(email):
 
 		r = obj.showStudentOrgnizations(email)
 		
-		return jsonify(r)
+		s_organization = {}
+
+		s_organization['organization'] = r
+
+		return jsonify(s_organization)
 
 @app.route('/login', methods = ['POST'])
 def login():
@@ -103,10 +123,15 @@ def login():
 		email=  js['email']
 
 		r = obj.checkLogin(email)
+
+		login_exists = {}
+
+		if r == '0':
+			login_exists['login_exists'] = '0'
+			return jsonify(login_exists)
 		
-		return jsonify(r)	
-
-
+		login_exists['login_exists'] = '1'
+		return jsonify(login_exists)	
 
 if __name__ == '__main__':
     app.run(host = '0.0.0.0')
