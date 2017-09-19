@@ -28,12 +28,19 @@ def add():
 		if r == '1':
 			#1 se ja existe na base de dados
 			exists_flag['flag'] = '1'
+			exists_flag['url'] = '/add'
+
 			return jsonify(exists_flag)
 
+		elif r == '0': 
+			#0 se não existe na base de dados
+			exists_flag['flag'] = '0'
+			exists_flag['url'] = '/add'
 
-		#0 se não existe na base de dados
-		exists_flag['flag'] = '0'
-		return jsonify(exists_flag)
+			return jsonify(exists_flag)
+
+		else:
+			return r
 
 @app.route('/registerorganization', methods = ['POST'])
 
@@ -78,6 +85,7 @@ def readUser(email):
 		userInfo = {}
 
 		userInfo['info'] = r 
+		userInfo['url'] = '/user/<email>'
 
 		return jsonify(userInfo)
 
@@ -103,11 +111,15 @@ def showUserOrganizations(email):
 
 		obj.initializeCursor()
 
-		r = obj.showStudentOrgnizations(email)
+		r = obj.showStudentOrganizations(email)
 		
+		if r == 'fail':
+			return 'fail'
+
 		s_organization = {}
 
 		s_organization['organization'] = r
+		s_organization['url'] = '/studentOrganization/<email>'
 
 		return jsonify(s_organization)
 
@@ -124,13 +136,20 @@ def login():
 
 		r = obj.checkLogin(email)
 
+		if r == 'fail':
+			return 'fail'
+
 		login_exists = {}
 
 		if r == '0':
 			login_exists['login_exists'] = '0'
+			login_exists['url'] = '/login'
+
 			return jsonify(login_exists)
 		
 		login_exists['login_exists'] = '1'
+		login_exists['url'] = '/login'
+
 		return jsonify(login_exists)	
 
 if __name__ == '__main__':

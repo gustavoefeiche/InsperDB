@@ -38,15 +38,25 @@ class DaoInsperdb:
 
     def insertValuesPerson(self, person_email, person_password):
         
-        exists = self.db.execute('''SELECT * FROM person WHERE Person_email = %s''', [person_email])
+            exists = False
 
-        if exists:
-            return '1'
+            try:
+                self.db.execute('''SET TRANSACTION ISOLATION LEVEL SERIALIZABLE ''')
+            
+                exists = self.db.execute('''SELECT * FROM person WHERE Person_email = %s''', [person_email])
+            except:
 
-        self.db.execute('''INSERT INTO Person (Person_email, Person_Password, Valid) VALUES (%s, %s, 'T')''', (person_email, person_password))
-        rv = self.db.fetchall()
-        self.mysql.connection.commit()
-        return '0'
+                print ("Erro ao inserir os dados")
+                self.mysql.connection.rollback()
+                return 'fail'
+                
+            if exists:
+                return '1'
+
+            self.db.execute('''INSERT INTO Person (Person_email, Person_Password, Valid) VALUES (%s, %s, 'T')''', (person_email, person_password))
+            rv = self.db.fetchall()
+            self.mysql.connection.commit()
+            return '0'
 
     def insertValuesStudent_Organization(self, Oname, Pemail):
 
@@ -77,9 +87,20 @@ class DaoInsperdb:
         self.mysql.connection.commit()
         return 'done'
 
-    def showStudentOrgnizations(self, email):
+    def showStudentOrganizations(self, email):
 
-        self.db.execute('''SELECT DISTINCT(so.nome) FROM person p, student_organization so, student_has_organization sho WHERE p.ID = sho.ID_student AND so.ID = sho.ID_organization AND p.ID = (SELECT ID FROM person WHERE Person_email = %s) ''', [email])
+        try:
+
+            self.db.execute('''SET TRANSACTION ISOLATION LEVEL SERIALIZABLE ''')
+
+            self.db.execute('''SELECT DISTINCT(so.nome) FROM person p, student_organization so, student_has_organization sho WHERE p.ID = sho.ID_student AND so.ID = sho.ID_organization AND p.ID = (SELECT ID FROM person WHERE Person_email = %s) ''', [email])
+            
+        except:
+            
+            print ("Erro ao inserir os dados")
+            self.mysql.connection.rollback()
+            return 'fail'
+
         rv = self.db.fetchall()
         self.mysql.connection.commit()
         
@@ -87,12 +108,22 @@ class DaoInsperdb:
 
     def checkLogin(self, email):
         
-        self.db.execute('''SELECT * FROM  person WHERE Person_email = %s AND Valid = 'T' ''', [email])
-    
+        try:
+            self.db.execute('''SET TRANSACTION ISOLATION LEVEL SERIALIZABLE ''')
+
+            self.db.execute('''SELECT * FROM  person WHERE Person_email = %s AND Valid = 'T' ''', [email])
+        
+        except:
+            print ("Erro ao inserir os dados")
+            self.mysql.connection.rollback()
+            return 'fail'
+
+
         rv = self.db.fetchall()
         
         if not rv:
             return '0'
+        
         
         return '1'
         
