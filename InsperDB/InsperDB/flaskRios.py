@@ -1,7 +1,8 @@
 from flask import Flask, request, jsonify
 from flask_mysqldb import MySQL
 from DaoInsperdb import DaoInsperdb
-import json
+from werkzeug import generate_password_hash, check_password_hash
+
 
 app = Flask(__name__)
 
@@ -20,8 +21,12 @@ def add():
 		#js = json.loads(request.get_json(force = True))
 		js = request.get_json(force = True)
 		email = js['email']
+
 		pw =  js['password']
-		r = obj.insertValuesPerson(email, pw)
+		hash_pw = generate_password_hash(pw)
+
+
+		r = obj.insertValuesPerson(email, hash_pw)
 
 		exists_flag = {}
 
@@ -83,8 +88,8 @@ def readUser(email):
 		r = obj.showUserInfo(email)
 
 		userInfo = {}
-
-		userInfo['info'] = r 
+		
+		userInfo['info'] = r
 		userInfo['url'] = '/user/<email>'
 
 		return jsonify(userInfo)
@@ -133,6 +138,8 @@ def login():
 		#js = json.loads(request.get_json(force = True))
 		js = request.get_json(force = True)
 		email=  js['email']
+		pw = js['password']
+
 
 		r = obj.checkLogin(email)
 
@@ -146,11 +153,22 @@ def login():
 			login_exists['url'] = '/login'
 
 			return jsonify(login_exists)
-		
-		login_exists['login_exists'] = '1'
-		login_exists['url'] = '/login'
 
-		return jsonify(login_exists)	
+		else:
+
+			if check_password_hash(r[0][2], pw) == True:
+
+		
+				login_exists['login_exists'] = '1'
+				login_exists['url'] = '/login'
+				return jsonify(login_exists)
+
+			login_exists['login_exists'] = 'senha incorreta'
+			login_exists['url'] = '/login'
+			return jsonify(login_exists)
+
+
+			return jsonify(login_exists)	
 
 if __name__ == '__main__':
     app.run(host = '0.0.0.0')

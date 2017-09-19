@@ -42,7 +42,8 @@ class DaoInsperdb:
 
             try:
                 self.db.execute('''SET TRANSACTION ISOLATION LEVEL SERIALIZABLE ''')
-            
+                print(person_password)
+
                 exists = self.db.execute('''SELECT * FROM person WHERE Person_email = %s''', [person_email])
             except:
 
@@ -76,9 +77,11 @@ class DaoInsperdb:
 
     
         self.db.execute('''SELECT * FROM  person WHERE Person_email = %s ''', [email])
+        #senha_hash = self.db.execute('''SELECT Person_Password FROM  person WHERE Person_email = %s AND Valid = 'T' ''', [email])
+
         rv = self.db.fetchall()
         self.mysql.connection.commit()
-        
+
         return str(rv)
 
     def logicDelete(self, email):
@@ -111,8 +114,7 @@ class DaoInsperdb:
         try:
             self.db.execute('''SET TRANSACTION ISOLATION LEVEL SERIALIZABLE ''')
 
-            self.db.execute('''SELECT * FROM  person WHERE Person_email = %s AND Valid = 'T' ''', [email])
-        
+            self.db.execute('''SELECT * FROM  person WHERE Person_email = %s AND Valid = 'T' ''', [email])        
         except:
             print ("Erro ao inserir os dados")
             self.mysql.connection.rollback()
@@ -124,6 +126,5 @@ class DaoInsperdb:
         if not rv:
             return '0'
         
-        
-        return '1'
+        return rv
         
